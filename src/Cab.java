@@ -13,6 +13,8 @@ public class Cab {
     int pos;
     int shaft;
     int nextAvail;
+    int timeToUsr;
+    int timeToUsrCollide;
     boolean avail;
 
     /**
