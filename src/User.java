@@ -10,7 +10,7 @@ public class User {
 
     static int maxFloor = 0;
     static int count = 0;   //Class variable to track user IDs
-    static Random rand = new Random();
+    RNG rng;
     int id;
     int arrTime;    //Arrival time
     int src;        //Source floor
@@ -25,16 +25,16 @@ public class User {
      */
 
     User(int arrTime, int src) {
+        rng = new RNG();
         this.id = count;
         count++;
         this.arrTime = arrTime;
         this.src = src;
-        //Set random destination for user.
-        Random r = new Random();
+        //Set random destination for user
         this.dest = this.src;
         while (this.src == this.dest) {
-            this.dest = r.nextInt(maxFloor) + 1;
-        }
+            this.dest = rng.nextDest(this.src) + 1;
+        } 
     }
 }
 

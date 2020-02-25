@@ -4,7 +4,7 @@ package sim;
  * Holds state variables for generators.
  */
 
-public class Generator {
+public class testGenerator {
 
     static int count = 0;
     int id;
@@ -16,7 +16,7 @@ public class Generator {
      * @param mean average for generator. Not yet implemented.
      */
 
-    Generator() {
+    testGenerator() {
         id = count;
         count++;
         rng = new RNG();
@@ -30,7 +30,7 @@ public class Generator {
      */
 
     int gen(int currTime) {
-        return rng.nextTime() + currTime;
+        return 5 + currTime;
     }
         
 }

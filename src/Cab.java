@@ -15,7 +15,6 @@ public class Cab {
     int nextAvail;
     int timeToUsr;
     int timeToUsrCollide;
-    boolean avail;
 
     /**
      * Constructs a cab at its initial position.
@@ -28,11 +27,18 @@ public class Cab {
         id = count;
         count++;
         this.dest = 0;
-        this.avail = true;
         this.shaft = shaft;
         this.pos = pos;
         this.curr = pos + 1; 
         this.nextAvail = 0;
+    }
+
+    boolean getAvail(int timestamp) {
+        if (timestamp - nextAvail >= 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

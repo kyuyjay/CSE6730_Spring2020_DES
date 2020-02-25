@@ -22,9 +22,9 @@ public class Engine {
      * @param s statistics aggregator
      */
 
-    public Engine(Params p, Stats s) {
+    public Engine(Params p, Stats s, int algo, boolean v) {
         this.s = s;
-        this.m = new Model(p,s);
+        this.m = new Model(p,s,algo,v);
     }
 
     /**
@@ -40,7 +40,6 @@ public class Engine {
         //Iterate through list until predetermined end time
         while (time < endTime) {
             Event curr = e.poll();  //Pop earliest event
-            System.out.println("Processing event at time " + curr.timestamp);
             time = curr.timestamp;  //Advance simulation time
             triggeredEvents = curr.process(m);  //Polymorphic
             if (triggeredEvents != null) {      //Add all triggered events

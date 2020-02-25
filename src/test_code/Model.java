@@ -16,7 +16,7 @@ public class Model {
     private boolean v;
     private Params p;
     private Stats s;
-    private ArrayList<Generator> gens;
+    private ArrayList<testGenerator> gens;
     private ArrayList<Cab> cabs;
 
     // Current state variables
@@ -58,7 +58,7 @@ public class Model {
         }
         PriorityQueue<Event> e = new PriorityQueue<Event>(p.numFloors);
         //Set first user generation event for each floor
-        for (int i = 0; i < p.numFloors; i++) {
+        for (int i = 0; i < 1/*p.numFloors*/; i++) {
             User u = new User(0,i+1);
             e.add(new UserGenEvent(0,u));
         }
@@ -72,12 +72,13 @@ public class Model {
      */
 
     private void initGens(int numFloors) {
-        this.gens = new ArrayList<Generator>(numFloors);
+        numFloors = 1;
+        this.gens = new ArrayList<testGenerator>(numFloors);
         if (v) {
             System.out.println("Setting up generators");
         }
         for (int i = 0; i < numFloors; i++) {
-            gens.add(new Generator());
+            gens.add(new testGenerator());
         }
         return;
     }
@@ -113,7 +114,8 @@ public class Model {
 
     Event gen(User u) {
         //Generate random timestamp
-        int timestamp = gens.get(u.src - 1).gen(u.arrTime);
+        int timestamp = gens.get(0).gen(u.arrTime);
+        // int timestamp = gens.get(u.src - 1).gen(u.arrTime);
         //Set arrival time to randomly generated time
         u.arrTime = timestamp;
         if (v) {
@@ -143,8 +145,8 @@ public class Model {
             // Algorithm avoids collision
             case 1:
                 possible = cabs.stream()
-                    .filter(cab -> checkBounds(cab))                // Filter for eligible cabs
-                    .map(cab -> findTimeToUsr(cab))                 // Evaluate cost
+                    .filter(cab -> checkBounds(cab))
+                    .map(cab -> findTimeToUsr(cab))
                     .filter(cab -> isCollide(cab,curr_time))        // Avoid collision
                     .min(new Comparator<Cab>() {
                         @Override
@@ -183,8 +185,8 @@ public class Model {
             // Algorithm accounts for collision in cost
             case 2:
                 possible = cabs.stream()
-                    .filter(cab -> checkBounds(cab))        // Filter for eligible cabs
-                    .map(cab -> findTimeToUsr(cab))         // Evaluate cost
+                    .filter(cab -> checkBounds(cab))
+                    .map(cab -> findTimeToUsr(cab))
                     .min(new Comparator<Cab>() {
                         @Override
                         // Cost by time to user including collision
@@ -202,24 +204,19 @@ public class Model {
                 break;
         }
 
-        // Time elevator travels, including travelling to pickup user
+        //Time elevator travels, including travelling to pickup user
         int nextTime = 0;
         Cab other = otherCab(assigned);
-        // Time to destination equals to the time to reach user added to the time to traverse to destination
+        // 
         nextTime = assigned.timeToUsrCollide + Math.abs(curr_u.dest - curr_u.src) * TRAVEL_TIME;  
-        // Move other cab if in the way
-        // First check if collision occurs when assigned cab is free
         if (!isCollide(assigned,Math.max(curr_time,assigned.nextAvail))) {
-            // Move other cab when assigned cab is available
             if (other.pos == 1) {
-                // Move to one above for upper cab
                 int curr = Math.max(curr_u.src,curr_u.dest) + 1;
                 if (other.dest < curr) {
                     other.nextAvail = curr_time + Math.abs(curr - other.dest) * TRAVEL_TIME;
                     other.dest = curr;
                 } 
             } else {
-                // Move to one below for lower cab
                 int curr = Math.min(curr_u.src,curr_u.dest) - 1;
                 if (other.dest > curr) {
                     other.nextAvail = curr_time + Math.abs(curr - other.dest) * TRAVEL_TIME;
@@ -227,7 +224,6 @@ public class Model {
                 } 
             }
         } else { 
-            // Move other cab when it is available
             other.nextAvail = other.nextAvail + (Math.abs(other.dest - curr_u.dest) + 1) * TRAVEL_TIME;
             if (other.pos == 1) {
                 other.dest = curr_u.dest + 1;
@@ -235,15 +231,13 @@ public class Model {
                 other.dest = curr_u.dest - 1;
             }
         }
-        // Update state
         assigned.dest = curr_u.dest;
         assigned.nextAvail = nextTime;
         curr_u.cab = assigned.id;
         if (v) {
             System.out.println("Cab " + assigned.id + " assigned to user " + u.id + " from " + u.src + " to " + u.dest + " and reaches destination at " + nextTime);
         }
-        // Update stats
-        s.numIn++;
+        s.numIn++;      //Update user arrival stats
         s.totTimeWait += assigned.timeToUsrCollide - curr_time;
         return new UserExitEvent(nextTime,u);
     }
@@ -350,8 +344,6 @@ public class Model {
             if (!isCollide(cab,curr_time)) {
                 cab.timeToUsrCollide = curr_time + (TRAVEL_TIME * Math.abs(cab.dest - curr_u.src));
             } else {
-                // Wait for other cab to be free
-                // Next available time for other is always more as collision was triggered
                 cab.timeToUsrCollide = other.nextAvail + (TRAVEL_TIME * Math.abs(cab.dest - curr_u.src)); 
             }
             cab.timeToUsr = curr_time + (TRAVEL_TIME * Math.abs(cab.dest - curr_u.src));
@@ -361,11 +353,10 @@ public class Model {
             if (!isCollide(cab,cab.nextAvail)) {
                 cab.timeToUsrCollide = cab.nextAvail + (TRAVEL_TIME * Math.abs(cab.dest - curr_u.src));
             } else {
-                // Wait for other cab to be free
                 // Next available time for other is always more as collision was triggered
                 cab.timeToUsrCollide = other.nextAvail + (TRAVEL_TIME * Math.abs(cab.dest - curr_u.src)); 
             }
-            cab.timeToUsr = cab.nextAvail + (TRAVEL_TIME * Math.abs(cab.dest - curr_u.src));
+            cab.timeToUsr = cab.nextAvail + (TRAVEL_TIME * Math.abs(cab.dest - curr_u.dest));
         }   
         return cab;
     }
