@@ -55,4 +55,5 @@ for dist,p in zip(models,p_chi):
     print("{0:20} {1}".format(dist.name, p))
 
 print("Best model is {} with p value of {}".format(models[np.argmax(p_chi)].name,max(p_chi)))
+print(models[np.argmax(p_chi)].fit(data=data));
 
