@@ -1,0 +1,30 @@
+Setting up generators
+Setting up cabs
+Initializing Model
+Scheduling user 0 at time 5
+Cab 0 assigned to user 0 from 1 to 12 and reaches destination at 29
+Scheduling user 1 at time 10
+Cab 2 assigned to user 1 from 1 to 11 and reaches destination at 32
+Scheduling user 2 at time 15
+Cab 4 assigned to user 2 from 1 to 10 and reaches destination at 35
+Scheduling user 3 at time 20
+Cab 4 assigned to user 3 from 1 to 11 and reaches destination at 75
+Number of Users Arrived: 4
+Number of Users Exited: 0
+Average Time Spent Waiting for Cab: 10
+Setting up generators
+Setting up cabs
+Initializing Model
+Scheduling user 0 at time 5
+Cab 0 assigned to user 0 from 1 to 5 and reaches destination at 15
+Scheduling user 1 at time 10
+Cab 2 assigned to user 1 from 1 to 11 and reaches destination at 32
+Scheduling user 2 at time 15
+User 0 exits at time 15
+Cab 4 assigned to user 2 from 1 to 10 and reaches destination at 35
+Scheduling user 3 at time 20
+Cab 6 assigned to user 3 from 1 to 5 and reaches destination at 30
+Number of Users Arrived: 4
+Number of Users Exited: 1
+Average Time Spent Waiting for Cab: 2
+Average Time Spent Waiting and Travelling: 10
